@@ -43,11 +43,13 @@ This repository covers three deliverables for the same dataset:
 
 | # | Notebook | Deliverable | Status |
 |---|----------|-------------|--------|
-| P1 | `p1_eda.ipynb` | Problem formulation, data cleaning, EDA, hypothesis testing | Done (Week 6) |
-| P2 | `p2_regression.ipynb` | Regression — predicting movie profit | Week 10 |
-| P3 | `p3_classification.ipynb` | Classification — predicting movie quality and popularity | Week 15 |
+| P1 | `p1_eda.ipynb` | Problem formulation, data cleaning, EDA, hypothesis testing | Ready for submission |
+| P2 | `p2_regression.ipynb` | Regression — predicting movie profit | Draft / planned for Week 10 |
+| P3 | Classification notebook | Predicting movie quality and popularity | Planned for Week 15 |
 
-**How they connect:** P1 cleans and explores the data and defines the feature space. P2 uses those features for regression modelling (predicting `profit`). P3 uses the same cleaned dataset for classification modelling (`good_or_avg` and `popularity` labels defined in P1).
+**How they connect:** P1 cleans and explores the data and defines the feature space. P2 will use those features for regression modelling (predicting `profit`). P3 will use the same cleaned dataset for classification modelling (`good_or_avg` and `popularity` labels defined in P1).
+
+`top_movies.ipynb` is an earlier exploratory notebook kept for reference; `p1_eda.ipynb` is the submission notebook for P1.
 
 ---
 
