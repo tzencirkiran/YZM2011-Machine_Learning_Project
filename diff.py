@@ -1,8 +1,11 @@
+import os
 import tmdbsimple as tmdb
 import pandas as pd
+from dotenv import load_dotenv
 
-# API KEY for to pull data from TMDB
-tmdb.API_KEY = '260f7d68fecb569fc11ce48c80471254'
+# Load API key from .env so it is never committed to the repository
+load_dotenv()
+tmdb.API_KEY = os.getenv("TMDB_API_KEY")
 
 # List of original IMDb titles from the mismatches
 titles = [
@@ -18,9 +21,9 @@ titles = [
     "Blood In, Blood Out", "A Night at the Opera", "The Leopard", "Nostalghia",
     "The Blue Elephant", "Through a Glass Darkly", "Volver", "Confessions",
     "The Edge of Heaven", "Dragon Ball Super: Broly", "My Uncle", "Borat",
-    "Begin Again", "National Lampoon's Animal House", "Dead Alive", 
+    "Begin Again", "National Lampoon's Animal House", "Dead Alive",
     "March of the Penguins", "Show Me Love", "White Christmas", "Drunken Master II",
-    "It's a Mad Mad Mad Mad World", " '83", "Boy A", "The Odd Couple", 
+    "It's a Mad Mad Mad Mad World", " '83", "Boy A", "The Odd Couple",
     "Tora! Tora! Tora!", "Mortal World", "Marcel the Shell with Shoes On",
     "A Hero", "1900", "New World", "Between Family", "Seeking True Love",
     "Chup", "Darr", "X-Men", "Bullet Train", "Dumb and Dumber", "Wall Street",
@@ -42,44 +45,43 @@ titles = [
     "Delivery Man", "Upside Down", "Dorian Gray", "Diary of a Wimpy Kid"
 ]
 
-# A list to store results
 results = []
+
 for title in titles:
-    # Instantiate a search object for movie titles that we are gonna search in API
     search = tmdb.Search()
-    # response stores a dictionary for results of search
-    response = search.movie(query=title)
+    search.movie(query=title)
+
+    # Initialize all fields to None so they are safe even if no results are found
     matched_title = None
+    budget = None
     revenue = None
 
-    # If search results exactly match with case-insensitive checks then refer them as matched
     if search.results:
-        # try to find exact match (case-insensitive)
+        # Try to find an exact match (case-insensitive); fall back to first result
+        matched = None
         for r in search.results:
-            if r['title'].lower() == title.lower():
+            if r["title"].lower() == title.lower():
                 matched = r
                 break
-        else:
-            matched = search.results[0]  # fallback to first result
+        if matched is None:
+            matched = search.results[0]
 
-        # movie makes a request from tmdb api according to matched's id
-        movie = tmdb.Movies(matched['id'])
-        # info stores movies info
+        # Fetch full movie details
+        movie = tmdb.Movies(matched["id"])
         info = movie.info()
-        matched_title = info.get('title')
+        matched_title = info.get("title")
         budget = info.get("budget")
-        revenue = info.get('revenue')
+        revenue = info.get("revenue")
+    else:
+        print(f"No results found for: {title}")
 
     results.append({
-        'imdb_title': title,
-        'tmdb_title': matched_title,
-        "budget" : budget,
-        'revenue': revenue
+        "imdb_title":  title,
+        "tmdb_title":  matched_title,
+        "budget":      budget,
+        "revenue":     revenue,
     })
 
-# dataframe to store results
 df = pd.DataFrame(results)
 print(df)
-
-# save fixed diff
-df.to_csv("topMovies/diff_fix.csv")
+df.to_csv("diff_fix.csv", index=False)
