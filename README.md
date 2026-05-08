@@ -43,8 +43,8 @@ This repository covers three deliverables for the same dataset:
 
 | # | Notebook | Deliverable | Status |
 |---|----------|-------------|--------|
-| P1 | `p1_eda.ipynb` | Problem formulation, data cleaning, EDA, hypothesis testing | Ready for submission |
-| P2 | `p2_regression.ipynb` | Regression — predicting movie profit | Draft / planned for Week 10 |
+| P1 | `p1_eda.ipynb` | Problem formulation, data cleaning, EDA, hypothesis testing | Submitted |
+| P2 | `p2/p2_regression_25018603.ipynb` | Regression — predicting movie profit | Week 10 - Submitted |
 | P3 | Classification notebook | Predicting movie quality and popularity | Planned for Week 15 |
 
 **How they connect:** P1 cleans and explores the data and defines the feature space. P2 will use those features for regression modelling (predicting `profit`). P3 will use the same cleaned dataset for classification modelling (`good_or_avg` and `popularity` labels defined in P1).
@@ -53,11 +53,22 @@ This repository covers three deliverables for the same dataset:
 
 ---
 
+## P2 Regression Summary
+
+P2 predicts movie `profit` using linear, polynomial, Ridge, and Lasso regression models. Budget is a strong baseline predictor, while engineered log, interaction, runtime-bin, and genre features improve validation performance. The best validation result comes from the degree-2 polynomial model, with final held-out test performance around **R^2 = 0.52**, **RMSE = $109M**, and **MAE = $58M**. The main limitation is that exact profit prediction remains difficult because box-office outcomes contain extreme blockbuster outliers and the dataset lacks business variables such as marketing spend, franchise status, release scale, and distribution strategy.
+
+---
+
 ## Running the Project
 
 **P1 EDA:**
 ```bash
 jupyter notebook p1_eda.ipynb
+```
+
+**P2 Regression:**
+```bash
+jupyter notebook p2/p2_regression_25018603.ipynb
 ```
 
 **Re-fetch TMDB financial data** (requires API key in `.env`):
