@@ -10,14 +10,14 @@
 
 What factors drive the financial success and audience reception of movies?
 
-We combine IMDb ranking data for the top 5,000 movies with production budgets and box-office revenues fetched from the TMDB API. The goal is to understand which features (budget, runtime, genre, release year, vote count) best predict a film's financial outcome and audience rating — and to build progressively more sophisticated models across three deliverables.
+We combine IMDb ranking data for the top 5,000 movies with production budgets and box-office revenues fetched from the TMDB API. The goal is to understand which features (budget, runtime, genre, release year, vote count) best explain a film's financial outcome and audience rating, then build progressively more sophisticated models across three deliverables.
 
 **Research questions:**
 1. How are ratings and financial metrics distributed across the dataset?
 2. Which genres and directors dominate in terms of revenue and rating?
 3. Are budget, runtime, and release year correlated with IMDb rating or profit?
-4. Can we predict movie profit from observable pre-release features?
-5. Can we classify a movie as "good" or "average" based on its attributes?
+4. Can we predict movie profit from engineered metadata and financial features?
+5. Can we classify whether a movie is highly rated from non-rating metadata and post-release attention signals?
 
 ---
 
@@ -45,9 +45,9 @@ This repository covers three deliverables for the same dataset:
 |---|----------|-------------|--------|
 | P1 | `p1_eda.ipynb` | Problem formulation, data cleaning, EDA, hypothesis testing | Submitted |
 | P2 | `p2/p2_regression_25018603.ipynb` | Regression — predicting movie profit | Week 10 - Submitted |
-| P3 | Classification notebook | Predicting movie quality and popularity | Planned for Week 15 |
+| P3 | `p3/p3_classification_25018603.ipynb` | Classification + unsupervised analysis — predicting highly rated movies | Completed |
 
-**How they connect:** P1 cleans and explores the data and defines the feature space. P2 will use those features for regression modelling (predicting `profit`). P3 will use the same cleaned dataset for classification modelling (`good_or_avg` and `popularity` labels defined in P1).
+**How they connect:** P1 cleans and explores the data and defines the feature space. P2 uses those features for regression modelling by predicting `profit`. P3 uses the same cleaned dataset for Track A classification with `good_or_avg` as the target, while adding PCA, clustering, cluster labels as a feature, and tuned classification models.
 
 `top_movies.ipynb` is an earlier exploratory notebook kept for reference; `p1_eda.ipynb` is the submission notebook for P1.
 
@@ -56,6 +56,12 @@ This repository covers three deliverables for the same dataset:
 ## P2 Regression Summary
 
 P2 predicts movie `profit` using linear, polynomial, Ridge, and Lasso regression models. Budget is a strong baseline predictor, while engineered log, interaction, runtime-bin, and genre features improve validation performance. The best validation result comes from the degree-2 polynomial model, with final held-out test performance around **R^2 = 0.52**, **RMSE = $109M**, and **MAE = $58M**. The main limitation is that exact profit prediction remains difficult because box-office outcomes contain extreme blockbuster outliers and the dataset lacks business variables such as marketing spend, franchise status, release scale, and distribution strategy.
+
+## P3 Classification Summary
+
+P3 uses **Track A - Classification** to predict `good_or_avg`, where movies with IMDb `averageRating >= 7.5` are labeled highly rated. To prevent target leakage, `averageRating`, `rating_x_votes`, and IMDb `rank` are excluded from predictors. The notebook reuses P2's 60/20/20 split pattern with `RANDOM_STATE = 42`, applies PCA, tunes K-Means and GMM clustering on the training split only, adds the best cluster label as an engineered feature, and compares Logistic Regression, KNN, Decision Tree, Random Forest, and Gradient Boosting with GridSearchCV.
+
+The target has a moderate imbalance: **3,448** movies below 7.5 and **1,552** movies at or above 7.5. PCA required **14 components** to explain at least 90% of training-set variance. K-Means with **k=6** was selected as the best clustering run. The best tuned classifier was **Random Forest**, with validation macro F1 around **0.756** and held-out test performance of **accuracy = 0.796**, **macro F1 = 0.767**, and **AUC-ROC = 0.845**.
 
 ---
 
@@ -69,6 +75,11 @@ jupyter notebook p1_eda.ipynb
 **P2 Regression:**
 ```bash
 jupyter notebook p2/p2_regression_25018603.ipynb
+```
+
+**P3 Classification:**
+```bash
+jupyter notebook p3/p3_classification_25018603.ipynb
 ```
 
 **Re-fetch TMDB financial data** (requires API key in `.env`):
